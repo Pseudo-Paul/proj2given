@@ -3,7 +3,7 @@
 #include "../include/StringDataSource.h"
 
 int main() {
-    std::cout << "🚀 MAIN FUNCTION STARTED 🚀" << std::endl; // 🔥 Confirm main() runs
+    std::cout << "🔥🔥🔥 MAIN FUNCTION STARTED 🔥🔥🔥" << std::endl; // SUPER OBVIOUS DEBUG PRINT
 
     std::string xmlData = "<root><name>Alice</name><age>25</age></root>";
     std::cout << "Creating CStringDataSource..." << std::endl;
@@ -25,6 +25,6 @@ int main() {
     }
 
     std::cout << "ReadEntity was called " << count << " times." << std::endl;
-    std::cout << "XML Parsing Completed." << std::endl;
+    std::cout << "🔥 XML Parsing Completed. 🔥" << std::endl;
     return 0;
 }
