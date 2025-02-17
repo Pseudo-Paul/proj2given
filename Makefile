@@ -1,34 +1,54 @@
+# Compiler and flags
 CXX=g++
 CXXFLAGS=-std=c++17 -Wall -Wextra -Werror
-INCLUDES=-I./INCLUDES
+INCLUDES=-I./include
 LDFLAGS=-lgtest -lgtest_main -pthread -lexpat
 
-# Directory variables
+# Directories
 SRCDIR=src
+TESTDIR=testsrc
 OBJDIR=obj
 BINDIR=bin
 
-all: directories $(BINDIR)/teststrutils
+# Test executables
+TESTS=$(BINDIR)/teststrutils $(BINDIR)/teststrdatasource $(BINDIR)/teststrdatasink $(BINDIR)/testdsv $(BINDIR)/testxml
 
-# Create necessary directories
+# Make sure directories exist
+all: directories $(TESTS)
+
 directories:
-	mkdir -p $(OBJDIR)
-	mkdir -p $(BINDIR)
+	@if not exist $(OBJDIR) mkdir $(OBJDIR)
+	@if not exist $(BINDIR) mkdir $(BINDIR)
 
-# Compile cpp files from src
+
+# Build object files for source files
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-# Compile cpp files from testsrc
-$(OBJDIR)/%.o: testsrc/%.cpp
+# Build object files for test files
+$(OBJDIR)/%.o: $(TESTDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
-# Link test executable
+# Link test executables
 $(BINDIR)/teststrutils: $(OBJDIR)/StringUtilsTest.o $(OBJDIR)/StringUtils.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
+$(BINDIR)/teststrdatasource: $(OBJDIR)/StringDataSourceTest.o $(OBJDIR)/StringDataSource.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/teststrdatasink: $(OBJDIR)/StringDataSinkTest.o $(OBJDIR)/StringDataSink.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/testdsv: $(OBJDIR)/DSVTest.o $(OBJDIR)/CDSVReader.o $(OBJDIR)/CDSVWriter.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/testxml: $(OBJDIR)/XMLTest.o $(OBJDIR)/CXMLReader.o $(OBJDIR)/CXMLWriter.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+# Clean the target
 clean:
-	rm -rf $(OBJDIR)
-	rm -rf $(BINDIR)
+	@if exist $(OBJDIR) rmdir /s /q $(OBJDIR)
+	@if exist $(BINDIR) rmdir /s /q $(BINDIR)
+
 
 .PHONY: all directories clean
