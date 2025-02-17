@@ -1,6 +1,5 @@
 #include <iostream>
-
 int main() {
-    std::cout << "MinGW is working!" << std::endl;
+    std::cout << "✅ Simple Test Works!" << std::endl;
     return 0;
 }
