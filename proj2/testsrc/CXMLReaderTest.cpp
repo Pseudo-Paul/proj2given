@@ -3,7 +3,7 @@
 #include "../include/StringDataSource.h"
 
 int main() {
-    std::cout << "🚀 MAIN FUNCTION STARTED 🚀" << std::endl; // 🔥 DEBUGGING PRINT
+    std::cout << "🚀 MAIN FUNCTION STARTED 🚀" << std::endl; // 🔥 Confirm main() runs
 
     std::string xmlData = "<root><name>Alice</name><age>25</age></root>";
     std::cout << "Creating CStringDataSource..." << std::endl;
