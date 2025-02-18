@@ -1,12 +1,12 @@
 #include <iostream>
 #include <cassert>
-#include "CDSVReader.h"
+#include "DSVReader.h"
 #include "StringDataSource.h"
 
 void test_dsv_reader() {
     // Test case 1: Simple CSV parsing
     std::shared_ptr<CDataSource> source = std::make_shared<CStringDataSource>("a,b,c\n1,2,3\n");
-    CDSVReader reader(source, ',');
+    DSVReader reader(source, ',');
     std::vector<std::string> row;
     
     bool success = reader.ReadRow(row);

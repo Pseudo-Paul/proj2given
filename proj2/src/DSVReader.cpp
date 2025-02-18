@@ -1,5 +1,7 @@
 // DSVReader.cpp
 #include "DSVReader.h"
+#include <cstdlib>
+
 
 // Define the internal implementation structure (hidden from the user)
 struct DSVReader::SImplementation {

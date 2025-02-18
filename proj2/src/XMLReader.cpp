@@ -5,7 +5,7 @@
 
 XMLReader::XMLReader(std::shared_ptr<CDataSource> src) 
     : source(src), endOfFile(false) {
-    std::cout << "✅ CXMLReader Constructor Called!" << std::endl;
+    std::cout << "✅ XMLReader Constructor Called!" << std::endl;
     parser = XML_ParserCreate(nullptr);
     XML_SetUserData(parser, this);
     XML_SetElementHandler(parser, StartElementHandler, EndElementHandler);
@@ -13,7 +13,7 @@ XMLReader::XMLReader(std::shared_ptr<CDataSource> src)
 }
 
 XMLReader::~XMLReader() {
-    std::cout << "❌ CXMLReader Destructor Called!" << std::endl;
+    std::cout << "❌ XMLReader Destructor Called!" << std::endl;
     XML_ParserFree(parser);
 }
 
@@ -46,14 +46,14 @@ bool XMLReader::ReadEntity(SXMLEntity &entity, bool skipCDATA) {
 }
 
 void XMLReader::StartElementHandler(void *userData, const char *name, const char **atts) {
-    CXMLReader *reader = static_cast<CXMLReader*>(userData);
+    XMLReader *reader = static_cast<XMLReader*>(userData);
     std::cout << "🟢 Start Element: " << name << std::endl;
     reader->currentEntity.DType = SXMLEntity::EType::StartElement;
     reader->currentEntity.DNameData = name;
 }
 
 void XMLReader::EndElementHandler(void *userData, const char *name) {
-    CXMLReader *reader = static_cast<CXMLReader*>(userData);
+    XMLReader *reader = static_cast<XMLReader*>(userData);
     std::cout << "🔴 End Element: " << name << std::endl;
     reader->currentEntity.DType = SXMLEntity::EType::EndElement;
     reader->currentEntity.DNameData = name;

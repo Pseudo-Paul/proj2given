@@ -5,14 +5,14 @@
 #include "XMLEntity.h"
 #include "DataSink.h"
 
-class CXMLWriter{
+class XMLWriter{
     private:
         struct SImplementation;
         std::unique_ptr<SImplementation> DImplementation;
         
     public:
-        CXMLWriter(std::shared_ptr< CDataSink > sink);
-        ~CXMLWriter();
+        XMLWriter(std::shared_ptr< CDataSink > sink);
+        ~XMLWriter();
         
         bool Flush();
         bool WriteEntity(const SXMLEntity &entity);
