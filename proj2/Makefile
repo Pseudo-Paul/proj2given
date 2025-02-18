@@ -1,7 +1,10 @@
 # Compiler
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude -IC:/msys64/mingw64/include
-LDFLAGS := -L C:/msys64/mingw64/lib -lexpat
+CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude -D__USE_MINGW_ANSI_STDIO=1
+LDFLAGS := -L"C:/msys64/mingw64/lib"
+LDLIBS := -lexpat -lgtest -lgtest_main -pthread
+
+
 
 # Directories
 SRC_DIR := src
@@ -34,7 +37,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 
 # Link all object files into final executable
 $(EXEC): $(OBJS) | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC) $(GTEST_LIB)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC) $(LDFLAGS) $(LDLIBS)
+
+$(BIN_DIR)/string_utils.exe: $(OBJ_DIR)/StringUtils.o | $(BIN_DIR)
+   $(CXX) $(CXXFLAGS) $< -o $@
 
 # Run tests
 test: $(EXEC)
