@@ -1,62 +1,48 @@
-# Compiler settings
-CXX = g++                                    # We're using g++ compiler
-CXXFLAGS = -std=c++17 -I./proj2/include     # Use C++17 and look for header files in include directory
-LDFLAGS = -lgtest -lgtest_main -pthread      # Link with Google Test libraries
+# Compiler
+CXX := g++
+CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude
 
-# Define our directories
-BIN_DIR = bin      # Where our final programs go
-OBJ_DIR = obj      # Where our .o files go
-SRC_DIR = proj2/src        # Where our source code is
-TEST_DIR = proj2/testsrc   # Where our test code is
+# Directories
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin
+TEST_DIR := testsrc
 
-# Make sure our directories exist
-$(shell mkdir -p $(BIN_DIR))
-$(shell mkdir -p $(OBJ_DIR))
+# List of source files
+SRCS := $(wildcard $(SRC_DIR)/*.cpp)
+OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 
-# Main target - this runs everything
-all: teststrutils teststrdatasource teststrdatasink testdsv testxml
+# Executables
+EXEC := $(BIN_DIR)/testdsv.exe
 
-# Individual test program builds
-# Each line below creates one test program by combining the needed .o files
+# Google Test
+GTEST_LIB := -lgtest -lgtest_main -pthread
 
-# Test for string utilities
-teststrutils: $(OBJ_DIR)/StringUtils.o $(OBJ_DIR)/StringUtilsTest.o
-    $(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ $^ $(LDFLAGS)
+# Create necessary directories if they don't exist
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR) 2>NUL || :
 
-# Test for string data source
-teststrdatasource: $(OBJ_DIR)/StringDataSource.o $(OBJ_DIR)/StringDataSourceTest.o
-    $(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ $^ $(LDFLAGS)
+$(BIN_DIR):
+	mkdir $(BIN_DIR) 2>NUL || :
 
-# Test for string data sink
-teststrdatasink: $(OBJ_DIR)/StringDataSink.o $(OBJ_DIR)/StringDataSinkTest.o
-    $(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ $^ $(LDFLAGS)
+# Compilation rule
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Test for DSV reader/writer
-testdsv: $(OBJ_DIR)/CDSVReader.o $(OBJ_DIR)/CDSVWriter.o $(OBJ_DIR)/StringDataSource.o $(OBJ_DIR)/StringDataSink.o $(OBJ_DIR)/CDSVReaderTest.o $(OBJ_DIR)/CDSVWriterTest.o
-    $(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ $^ $(LDFLAGS)
+# Link all object files into final executable
+$(EXEC): $(OBJS) | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC) $(GTEST_LIB)
 
-# Test for XML reader/writer
-testxml: $(OBJ_DIR)/CXMLReader.o $(OBJ_DIR)/CXMLWriter.o $(OBJ_DIR)/StringDataSource.o $(OBJ_DIR)/StringDataSink.o $(OBJ_DIR)/CXMLReaderTest.o $(OBJ_DIR)/CXMLWriterTest.o
-    $(CXX) $(CXXFLAGS) -o $(BIN_DIR)/$@ $^ $(LDFLAGS) -lexpat
+# Run tests
+test: $(EXEC)
+	$(EXEC)
 
-# Rules to create .o files from .cpp files
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-    $(CXX) $(CXXFLAGS) -c -o $@ $
-
-$(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp
-    $(CXX) $(CXXFLAGS) -c -o $@ $
-
-# Run all the tests in the required order
-test: all
-    ./$(BIN_DIR)/teststrutils
-    ./$(BIN_DIR)/teststrdatasource
-    ./$(BIN_DIR)/teststrdatasink
-    ./$(BIN_DIR)/testdsv
-    ./$(BIN_DIR)/testxml
-
-# Clean up all generated files
+# Clean rule (Windows-friendly)
 clean:
-    rm -rf $(BIN_DIR) $(OBJ_DIR)
+	-rmdir /S /Q $(BIN_DIR) 2>NUL || :
+	-rmdir /S /Q $(OBJ_DIR) 2>NUL || :
+	del /F /Q $(BIN_DIR)/*.exe 2>NUL || :
+	del /F /Q $(OBJ_DIR)/*.o 2>NUL || :
 
-# Tell make these aren't actual files
-.PHONY: all clean test
+.PHONY: clean test
+
