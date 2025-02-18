@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
-#include "../src/CDSVReader.cpp"
-#include "../src/StringDataSource.cpp"
+#include "CDSVReader.h"  // Not CDSVReader.cpp
+#include "StringDataSource.h" // Not StringDataSource.cpp
+#include <memory>
+#include <vector>
+#include <string>
 
 TEST(DSVReaderTest, ReadsSimpleRow) {
     std::shared_ptr<CDataSource> source = std::make_shared<CStringDataSource>("a,b,c\n1,2,3\n");
