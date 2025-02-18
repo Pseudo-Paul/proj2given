@@ -1,19 +1,15 @@
-#include <iostream>
-#include "../include/CDSVReader.h"
-#include "../include/StringDataSource.h"
+#include <gtest/gtest.h>
+#include "../src/CDSVReader.cpp"
+#include "../src/StringDataSource.cpp"
 
-int main() {  // ✅ This MUST be here
-    std::string test_data = "name,age,city\nAlice,25,New York\nBob,30,Los Angeles";
-    std::shared_ptr<CStringDataSource> source = std::make_shared<CStringDataSource>(test_data);
+TEST(DSVReaderTest, ReadsSimpleRow) {
+    std::shared_ptr<CDataSource> source = std::make_shared<CStringDataSource>("a,b,c\n1,2,3\n");
     CDSVReader reader(source, ',');
-
     std::vector<std::string> row;
-    while (reader.ReadRow(row)) {
-        for (const auto& cell : row) {
-            std::cout << cell << " | ";
-        }
-        std::cout << std::endl;
-    }
-
-    return 0;
+    
+    EXPECT_TRUE(reader.ReadRow(row));
+    EXPECT_EQ(row.size(), 3);
+    EXPECT_EQ(row[0], "a");
+    EXPECT_EQ(row[1], "b");
+    EXPECT_EQ(row[2], "c");
 }
