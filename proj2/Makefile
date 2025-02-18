@@ -1,8 +1,7 @@
 # Compiler
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude -D__USE_MINGW_ANSI_STDIO=1
-LDFLAGS := -L"C:/msys64/mingw64/lib"
-LDLIBS := -lexpat -lgtest -lgtest_main -pthread
+CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude -I"C:/msys64/mingw64/include"
+LDFLAGS := -LC:/msys64/mingw64/lib -lexpat
 
 
 
@@ -40,7 +39,7 @@ $(EXEC): $(OBJS) | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC) $(LDFLAGS) $(LDLIBS)
 
 $(BIN_DIR)/string_utils.exe: $(OBJ_DIR)/StringUtils.o | $(BIN_DIR)
-   $(CXX) $(CXXFLAGS) $< -o $@
+	$(CXX) $(CXXFLAGS) $< -o $@
 
 # Run tests
 test: $(EXEC)
@@ -48,10 +47,11 @@ test: $(EXEC)
 
 # Clean rule (Windows-friendly)
 clean:
-	-rmdir /S /Q $(BIN_DIR) 2>NUL || :
-	-rmdir /S /Q $(OBJ_DIR) 2>NUL || :
-	del /F /Q $(BIN_DIR)/*.exe 2>NUL || :
-	del /F /Q $(OBJ_DIR)/*.o 2>NUL || :
+	-rmdir /S /Q bin 2>NUL || :
+	-rmdir /S /Q obj 2>NUL || :
+	del /F /Q bin/*.exe 2>NUL || :
+	del /F /Q obj/*.o 2>NUL || :
+
 
 .PHONY: clean test
 
