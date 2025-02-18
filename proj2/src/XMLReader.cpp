@@ -1,9 +1,9 @@
-#include "CXMLReader.h"
+#include "XMLReader.h"
 #include <iostream>
 #include <vector>
 #include <cstring>
 
-CXMLReader::CXMLReader(std::shared_ptr<CDataSource> src) 
+XMLReader::XMLReader(std::shared_ptr<CDataSource> src) 
     : source(src), endOfFile(false) {
     std::cout << "✅ CXMLReader Constructor Called!" << std::endl;
     parser = XML_ParserCreate(nullptr);
@@ -12,16 +12,16 @@ CXMLReader::CXMLReader(std::shared_ptr<CDataSource> src)
     XML_SetCharacterDataHandler(parser, CharacterDataHandler);
 }
 
-CXMLReader::~CXMLReader() {
+XMLReader::~XMLReader() {
     std::cout << "❌ CXMLReader Destructor Called!" << std::endl;
     XML_ParserFree(parser);
 }
 
-bool CXMLReader::End() const {
+bool XMLReader::End() const {
     return endOfFile;
 }
 
-bool CXMLReader::ReadEntity(SXMLEntity &entity, bool skipCDATA) {
+bool XMLReader::ReadEntity(SXMLEntity &entity, bool skipCDATA) {
     std::cout << "🔍 ReadEntity() called!" << std::endl; 
 
     char buffer[1024];
@@ -45,22 +45,22 @@ bool CXMLReader::ReadEntity(SXMLEntity &entity, bool skipCDATA) {
     return false;
 }
 
-void CXMLReader::StartElementHandler(void *userData, const char *name, const char **atts) {
+void XMLReader::StartElementHandler(void *userData, const char *name, const char **atts) {
     CXMLReader *reader = static_cast<CXMLReader*>(userData);
     std::cout << "🟢 Start Element: " << name << std::endl;
     reader->currentEntity.DType = SXMLEntity::EType::StartElement;
     reader->currentEntity.DNameData = name;
 }
 
-void CXMLReader::EndElementHandler(void *userData, const char *name) {
+void XMLReader::EndElementHandler(void *userData, const char *name) {
     CXMLReader *reader = static_cast<CXMLReader*>(userData);
     std::cout << "🔴 End Element: " << name << std::endl;
     reader->currentEntity.DType = SXMLEntity::EType::EndElement;
     reader->currentEntity.DNameData = name;
 }
 
-void CXMLReader::CharacterDataHandler(void *userData, const char *data, int len) {
-    CXMLReader *reader = static_cast<CXMLReader*>(userData);
+void XMLReader::CharacterDataHandler(void *userData, const char *data, int len) {
+    XMLReader *reader = static_cast<XMLReader*>(userData);
     std::cout << "🔠 Character Data: " << std::string(data, len) << std::endl;
     reader->currentEntity.DType = SXMLEntity::EType::CompleteElement;
     reader->currentEntity.DNameData.assign(data, len);

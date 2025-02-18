@@ -1,12 +1,11 @@
-#include "CDSVWriter.h"
+#include "DSVWriter.h"
 
-CDSVWriter::CDSVWriter(std::shared_ptr<CDataSink> snk, char delim, bool quote_all) 
+DSVWriter::DSVWriter(std::shared_ptr<CDataSink> snk, char delim, bool quote_all) 
     : sink(snk), delimiter(delim == '"' ? ',' : delim), quoteAll(quote_all) {}
 
-CDSVWriter::~CDSVWriter() {}
+DSVWriter::~DSVWriter() {}
 
-std::string CDSVWriter::QuoteValue(const std::string& value) const {
-    // Check if value needs quoting
+std::string DSVWriter::QuoteValue(const std::string& value) const {
     bool needsQuotes = quoteAll || 
                       value.find(delimiter) != std::string::npos ||
                       value.find('"') != std::string::npos ||
@@ -28,12 +27,12 @@ std::string CDSVWriter::QuoteValue(const std::string& value) const {
     return result;
 }
 
-bool CDSVWriter::WriteRow(const std::vector<std::string>& row) {
+bool DSVWriter::WriteRow(const std::vector<std::string>& row) {
     if (!sink) return false;
 
     try {
         std::string line;
-        line.reserve(row.size() * 8); // Pre-allocate space for efficiency
+        line.reserve(row.size() * 8);
 
         for (size_t i = 0; i < row.size(); ++i) {
             line += QuoteValue(row[i]);

@@ -6,17 +6,17 @@
 #include <string>
 #include "DataSource.h"
 
-class CDSVReader {
+class DSVReader {
 private:
-    struct SImplementation; // Forward declare the struct
-    std::unique_ptr<SImplementation> DImplementation; // Pointer to implementation
+    struct SImplementation;
+    std::unique_ptr<SImplementation> DImplementation;
 
 public:
-    CDSVReader(std::shared_ptr<CDataSource> src, char delimiter);
-    ~CDSVReader();
+    DSVReader(std::shared_ptr<CDataSource> src, char delimiter);
+    ~DSVReader();
 
     bool End() const;
     bool ReadRow(std::vector<std::string>& row);
 };
 
-#endif
+#endif  // DSVREADER_H
