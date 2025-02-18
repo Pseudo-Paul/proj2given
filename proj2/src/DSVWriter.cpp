@@ -18,7 +18,7 @@ std::string DSVWriter::QuoteValue(const std::string& value) const {
     std::string result = "\"";
     for (char ch : value) {
         if (ch == '"') {
-            result += "\"\""; // Double the quotes for escaping
+            result += "\"\""; // Escape double quotes by doubling them
         } else {
             result += ch;
         }
@@ -28,23 +28,18 @@ std::string DSVWriter::QuoteValue(const std::string& value) const {
 }
 
 bool DSVWriter::WriteRow(const std::vector<std::string>& row) {
-    if (!sink) return false;
+    if (!sink || row.empty()) return false; // ✅ Added check for invalid sink
 
-    try {
-        std::string line;
-        line.reserve(row.size() * 8);
+    std::string line;
+    line.reserve(row.size() * 8); // Optimize memory allocation
 
-        for (size_t i = 0; i < row.size(); ++i) {
-            line += QuoteValue(row[i]);
-            
-            if (i < row.size() - 1) {
-                line += delimiter;
-            }
+    for (size_t i = 0; i < row.size(); ++i) {
+        line += QuoteValue(row[i]);
+        if (i < row.size() - 1) {
+            line += delimiter;
         }
-        line += '\n';
-
-        return sink->Write(std::vector<char>(line.begin(), line.end()));
-    } catch (const std::exception&) {
-        return false;
     }
+    line += '\n';
+
+    return sink->Write(line.c_str(), line.size()); // ✅ Fix inefficient conversion
 }

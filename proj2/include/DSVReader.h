@@ -5,8 +5,6 @@
 #include <vector>
 #include <string>
 #include "DataSource.h"
-#include <cstdlib>
-
 
 class DSVReader {
 private:
@@ -16,6 +14,9 @@ private:
 public:
     DSVReader(std::shared_ptr<CDataSource> src, char delimiter);
     ~DSVReader();
+
+    DSVReader(const DSVReader&) = delete; // Prevent copy
+    DSVReader& operator=(const DSVReader&) = delete;
 
     bool End() const;
     bool ReadRow(std::vector<std::string>& row);

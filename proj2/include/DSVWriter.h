@@ -18,6 +18,9 @@ public:
     DSVWriter(std::shared_ptr<CDataSink> snk, char delimiter, bool quote_all = false);
     ~DSVWriter();
 
+    DSVWriter(const DSVWriter&) = delete; // Prevent copy
+    DSVWriter& operator=(const DSVWriter&) = delete;
+
     bool WriteRow(const std::vector<std::string>& row);
 };
 
