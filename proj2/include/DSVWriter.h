@@ -1,20 +1,29 @@
-#ifndef DSVWRITER_H
-#define DSVWRITER_H
+#ifndef CDSVWRITER_H
+#define CDSVWRITER_H
 
 #include <memory>
+#include <vector>
 #include <string>
 #include "DataSink.h"
 
-class CDSVWriter{
-    private:
-        struct SImplementation;
-        std::unique_ptr<SImplementation> DImplementation;
+class CDSVWriter {
+private:
+    std::shared_ptr<CDataSink> sink;
+    char delimiter;
+    bool quoteAll;
 
-    public:
-        CDSVWriter(std::shared_ptr< CDataSink > sink, char delimiter, bool quoteall = false);
-        ~CDSVWriter();
+    // Helper function to handle value quoting
+    std::string QuoteValue(const std::string& value) const;
 
-        bool WriteRow(const std::vector<std::string> &row);
+public:
+    // Constructor - takes sink, delimiter, and quoting preference
+    CDSVWriter(std::shared_ptr<CDataSink> snk, char delim, bool quoteAll = false);
+    
+    // Destructor
+    ~CDSVWriter();
+
+    // Writes a row of values
+    bool WriteRow(const std::vector<std::string>& row);
 };
 
 #endif

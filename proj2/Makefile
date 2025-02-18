@@ -18,6 +18,8 @@ EXEC := $(BIN_DIR)/testdsv.exe
 # Google Test
 GTEST_LIB := -lgtest -lgtest_main -pthread
 
+all: $(EXEC)
+
 # Create necessary directories if they don't exist
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR) 2>NUL || :
