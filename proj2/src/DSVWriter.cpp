@@ -28,11 +28,9 @@ std::string DSVWriter::QuoteValue(const std::string& value) const {
 }
 
 bool DSVWriter::WriteRow(const std::vector<std::string>& row) {
-    if (!sink || row.empty()) return false; // ✅ Added check for invalid sink
+    if (!sink || row.empty()) return false;
 
     std::string line;
-    line.reserve(row.size() * 8); // Optimize memory allocation
-
     for (size_t i = 0; i < row.size(); ++i) {
         line += QuoteValue(row[i]);
         if (i < row.size() - 1) {
@@ -41,5 +39,7 @@ bool DSVWriter::WriteRow(const std::vector<std::string>& row) {
     }
     line += '\n';
 
-    return sink->Write(line.c_str(), line.size()); // ✅ Fix inefficient conversion
+    std::vector<char> buffer(line.begin(), line.end());  // ✅ Convert string to vector<char>
+    return sink->Write(buffer);
 }
+
