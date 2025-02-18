@@ -1,6 +1,7 @@
 # Compiler
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude
+CXXFLAGS := -std=c++17 -Wall -Wextra -Iinclude -IC:/msys64/mingw64/include
+LDFLAGS := -L C:/msys64/mingw64/lib -lexpat
 
 # Directories
 SRC_DIR := src
