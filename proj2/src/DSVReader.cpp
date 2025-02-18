@@ -14,7 +14,9 @@ struct DSVReader::SImplementation {
         if (!source->Get(ch)) return false;
 
         if (ch == '"') {
-            if (insideQuotes && source->Peek() == '"') {  
+            char nextChar;
+if (insideQuotes && source->Peek(nextChar) && nextChar == '"') {
+
                 source->Get(ch);
                 cell += '"';
             } else {
