@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "CDSVReader.h"  // Not CDSVReader.cpp
-#include "StringDataSource.h" // Not StringDataSource.cpp
+#include "CDSVReader.h"
+#include "StringDataSource.h"
 #include <memory>
 #include <vector>
 #include <string>

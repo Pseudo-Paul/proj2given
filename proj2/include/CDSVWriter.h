@@ -10,17 +10,20 @@ class CDSVWriter {
 private:
     std::shared_ptr<CDataSink> sink;
     char delimiter;
-    bool quoteAll; // Whether to quote all values or only special cases
+    bool quoteAll;
+
+    // Helper function to handle value quoting
+    std::string QuoteValue(const std::string& value) const;
 
 public:
-    // Constructor
+    // Constructor - takes sink, delimiter, and quoting preference
     CDSVWriter(std::shared_ptr<CDataSink> snk, char delim, bool quoteAll = false);
-
+    
     // Destructor
     ~CDSVWriter();
 
-    // Writes a row of values to the file
+    // Writes a row of values
     bool WriteRow(const std::vector<std::string>& row);
 };
 
-#endif // CDSVWRITER_H
+#endif

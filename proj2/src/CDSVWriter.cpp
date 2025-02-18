@@ -1,42 +1,51 @@
 #include "CDSVWriter.h"
 
-CDSVWriter::CDSVWriter(std::shared_ptr<CDataSink> snk, char delim, bool quoteAll) 
-    : sink(snk), delimiter(delim), quoteAll(quoteAll) {}
+CDSVWriter::CDSVWriter(std::shared_ptr<CDataSink> snk, char delim, bool quote_all) 
+    : sink(snk), delimiter(delim == '"' ? ',' : delim), quoteAll(quote_all) {}
 
 CDSVWriter::~CDSVWriter() {}
+
+std::string CDSVWriter::QuoteValue(const std::string& value) const {
+    // Check if value needs quoting
+    bool needsQuotes = quoteAll || 
+                      value.find(delimiter) != std::string::npos ||
+                      value.find('"') != std::string::npos ||
+                      value.find('\n') != std::string::npos;
+
+    if (!needsQuotes) {
+        return value;
+    }
+
+    std::string result = "\"";
+    for (char ch : value) {
+        if (ch == '"') {
+            result += "\"\""; // Double the quotes for escaping
+        } else {
+            result += ch;
+        }
+    }
+    result += "\"";
+    return result;
+}
 
 bool CDSVWriter::WriteRow(const std::vector<std::string>& row) {
     if (!sink) return false;
 
-    std::string line;
-    for (size_t i = 0; i < row.size(); ++i) {
-        std::string cell = row[i];
+    try {
+        std::string line;
+        line.reserve(row.size() * 8); // Pre-allocate space for efficiency
 
-        // Check if we need to quote the cell
-        bool needsQuotes = quoteAll || cell.find(delimiter) != std::string::npos || 
-                           cell.find('"') != std::string::npos || cell.find('\n') != std::string::npos;
-
-        if (needsQuotes) {
-            line += '"';
-            for (char ch : cell) {
-                if (ch == '"') line += "\"\""; // Escape double quotes
-                else line += ch;
+        for (size_t i = 0; i < row.size(); ++i) {
+            line += QuoteValue(row[i]);
+            
+            if (i < row.size() - 1) {
+                line += delimiter;
             }
-            line += '"';
-        } else {
-            line += cell;
         }
+        line += '\n';
 
-        // Add delimiter except for the last column
-        if (i < row.size() - 1) {
-            line += delimiter;
-        }
+        return sink->Write(std::vector<char>(line.begin(), line.end()));
+    } catch (const std::exception&) {
+        return false;
     }
-
-    // Add newline at the end
-    line += '\n';
-
-    // Write the line to the sink
-    std::vector<char> buffer(line.begin(), line.end());
-    return sink->Write(buffer);
 }
